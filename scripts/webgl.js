@@ -13,11 +13,15 @@ loadFiles('shaders/', ['common.glsl', 'shader.vert', 'shader.frag'], function(sh
 	};
 	loadMaterials();
 
-	// const image = twgl. { src: "images/clover.jpg" };
-
 	const uniforms = {
 		time: 0,
 		resolution: [1,1],
+
+		// http://twgljs.org/docs/module-twgl.html#.TextureOptions
+		image: twgl.createTexture(gl, {
+			src: "images/CookieCollective.png",
+			flipY: true
+		}),
 	};
 
 	function render(elapsed) {
