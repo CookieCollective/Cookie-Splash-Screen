@@ -1,5 +1,15 @@
+@font-face {
+	font-family: 'bebasneue_bold';
+	src: url('fonts/bebasneue_bold.woff2') format('woff2'),
+	url('fonts/bebasneue_bold.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
 body {
 	background-color: black;
+	height: 100vh;
+	margin: 0;
 }
 
 canvas {
@@ -9,4 +19,21 @@ canvas {
 	top: 0;
 	width: 100vw;
 	height: 100vh;
+}
+
+a {
+	color: white;
+	text-decoration: none;
+}
+
+.logo {
+	width: 400px;
+}
+
+.center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 100%;
+	min-height: 100%;
 }

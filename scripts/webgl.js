@@ -19,7 +19,7 @@ loadFiles('shaders/', ['common.glsl', 'shader.vert', 'shader.frag'], function(sh
 
 		// http://twgljs.org/docs/module-twgl.html#.TextureOptions
 		image: twgl.createTexture(gl, {
-			src: "images/CookieCollective.png",
+			src: "images/CookieCollective.shadow.png",
 			flipY: true
 		}),
 	};
