@@ -1,6 +1,6 @@
 
 uniform sampler2D image;
-const vec2 imageResolution = vec2(900, 600);
+const vec2 imageResolution = vec2(717, 492);
 
 varying vec2 uv;
 

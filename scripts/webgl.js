@@ -1,5 +1,5 @@
 
-loadFiles('shaders/', ['common.glsl', 'screen.vert', 'simple.frag', 'render.frag', 'rainbow-lazer.frag', 'feedback.frag'], function(shaders) {
+loadFiles('shaders/', ['common.glsl', 'screen.vert', 'simple.frag', 'render.frag', 'rainbow-lazer.frag', 'feedback.frag', 'rainbow-array.frag'], function(shaders) {
 
 	const gl = document.getElementById("canvas").getContext("webgl");
 
@@ -14,10 +14,16 @@ loadFiles('shaders/', ['common.glsl', 'screen.vert', 'simple.frag', 'render.frag
 	var materialMap = {
 		'simple': 					['screen.vert', 		'simple.frag'],
 		'rainbow-lazer': 		['screen.vert', 		'rainbow-lazer.frag'],
+		'rainbow-array': 		['screen.vert', 		'rainbow-array.frag'],
 		'feedback': 				['screen.vert', 		'feedback.frag'],
 		'render': 					['screen.vert', 		'render.frag'],
 	};
 	loadMaterials();
+
+	var keysMaterial = Object.keys(materialMap);
+	var currentMaterial = 0;
+	var elapsedMaterial = 0;
+	var durationMaterial = 3;
 
 	const uniforms = {
 		time: 0,
@@ -33,16 +39,24 @@ loadFiles('shaders/', ['common.glsl', 'screen.vert', 'simple.frag', 'render.frag
 
 	function render(elapsed) {
 		elapsed /= 1000;
+		var dt = elapsed - uniforms.time;
 		uniforms.time = elapsed;
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, frames[currentFrame].framebuffer);
 		uniforms.frame = frames[(currentFrame+1)%2].attachments[0];
-		draw('feedback');
+		// draw('rainbow-array');
+		draw(keysMaterial[currentMaterial]);
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		draw('render');
 
 		currentFrame = (currentFrame+1)%2;
+		if (elapsedMaterial > durationMaterial) {
+			elapsedMaterial = 0;
+			currentMaterial = (currentMaterial+1)%(keysMaterial.length-1);
+		} else {
+			elapsedMaterial += dt;
+		}
 		requestAnimationFrame(render);
 	}
 
