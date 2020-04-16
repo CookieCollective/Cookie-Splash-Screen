@@ -1,25 +1,32 @@
 
-loadFiles('shaders/', ['common.glsl', 'shader.vert', 'shader.frag'], function(shaders) {
+loadFiles('shaders/', ['common.glsl', 'screen.vert', 'simple.frag', 'render.frag', 'rainbow-lazer.frag', 'feedback.frag'], function(shaders) {
 
 	const gl = document.getElementById("canvas").getContext("webgl");
 
+	const frames = [ twgl.createFramebufferInfo(gl), twgl.createFramebufferInfo(gl) ];
+	var currentFrame = 0;
+
 	const planeBuffer = twgl.createBufferInfoFromArrays(gl, {
-		position: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0]
+		position: [ -1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0 ]
 	});
 
 	var materials = {};
 	var materialMap = {
-		'simple': ['shader.vert', 'shader.frag'],
+		'simple': 					['screen.vert', 		'simple.frag'],
+		'rainbow-lazer': 		['screen.vert', 		'rainbow-lazer.frag'],
+		'feedback': 				['screen.vert', 		'feedback.frag'],
+		'render': 					['screen.vert', 		'render.frag'],
 	};
 	loadMaterials();
 
 	const uniforms = {
 		time: 0,
 		resolution: [1,1],
+		frame: 0,
 
 		// http://twgljs.org/docs/module-twgl.html#.TextureOptions
 		image: twgl.createTexture(gl, {
-			src: "images/CookieCollective.shadow.png",
+			src: "images/CookieCollective.png",
 			flipY: true
 		}),
 	};
@@ -28,8 +35,14 @@ loadFiles('shaders/', ['common.glsl', 'shader.vert', 'shader.frag'], function(sh
 		elapsed /= 1000;
 		uniforms.time = elapsed;
 
-		draw('simple');
+		gl.bindFramebuffer(gl.FRAMEBUFFER, frames[currentFrame].framebuffer);
+		uniforms.frame = frames[(currentFrame+1)%2].attachments[0];
+		draw('feedback');
 
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		draw('render');
+
+		currentFrame = (currentFrame+1)%2;
 		requestAnimationFrame(render);
 	}
 
@@ -49,6 +62,8 @@ loadFiles('shaders/', ['common.glsl', 'shader.vert', 'shader.frag'], function(sh
 
 	function onWindowResize() {
 		twgl.resizeCanvasToDisplaySize(gl.canvas);
+		twgl.resizeFramebufferInfo(gl, frames[0]);
+		twgl.resizeFramebufferInfo(gl, frames[1]);
 		uniforms.resolution = [gl.canvas.width, gl.canvas.height];
 	}
 
